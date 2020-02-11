@@ -1,10 +1,10 @@
 'use strict'
 
+const app = require('../src/app');
 const http = require('http');
 const express = require('express');
 const debug = require('debug')('nodestr:server');
 
-const app = express();
 const port = normalizePort(process.env.PORT || "3000 ");
 app.set('port',port);
 
@@ -17,10 +17,10 @@ let route = router.get('/', (req,res,next)=>{
         version: "0.0.1"
     });
 });
-app.use('/', route);
 
 server.listen(port);
 server.on('error', OnError);
+server.on('listening', OnListening);
 console.log('API rodando na porta'+port);
 
 //Retirada do gerador de código do Express
@@ -63,4 +63,12 @@ function OnError(error){
             throw error;
     }
 
+}
+
+function OnListening(){
+    const addr = server.address();
+    const bind = typeof addr === 'string'
+    ? 'pipe' + addr
+    : 'port' + addr.port;
+    debug("Listening on"+bind);
 }
